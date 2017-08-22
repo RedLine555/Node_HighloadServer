@@ -1,9 +1,9 @@
 const path = require('path'),
-    db = require(path.resolve('server/services/db'));
+    Users = require(path.resolve('server/services/db')).model('users');
 
 module.exports = {
     userIdParam(req, res, next, id) {
-        req.user = db.get(+id);
+        req.user = Users.get(+id);
         if (!req.user)
             res.status(404).send();
         else
@@ -13,21 +13,21 @@ module.exports = {
         res.json(req.user);
     },
     getAll(req, res) {
-        res.json(db.getAll());
+        res.json(Users.getAll(req.query));
     },
     update(req, res) {
         let model = req.body;
         model.id = req.user.id;
-        db.update(model);
+        Users.update(model);
         res.status(200).send();
     },
     add(req, res) {
         let model = req.body;
-        db.add(model);
+        Users.add(model);
         res.status(200).send();
     },
     remove(id) {
-        db.remove(req.user.id);
+        Users.remove(req.user.id);
         res.status(200).send();
     }
 }
