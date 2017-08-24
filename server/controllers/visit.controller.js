@@ -1,5 +1,7 @@
 const path = require('path'),
-    Visits = require(path.resolve('server/services/db')).model('visits');;
+    db = require(path.resolve('server/services/db')),
+    Locations = db.model('locations'),
+    Visits = db.model('visits');
 
 module.exports = {
     visitIdParam(req, res, next, id) {
@@ -13,7 +15,7 @@ module.exports = {
         res.json(req.user);
     },
     getAll(req, res) {
-        res.json(Visits.getAll(req.query));
+        res.json(Visits.getAll());
     },
     update(req, res) {
         let model = req.body;

@@ -3,6 +3,9 @@ const express = require('express'),
     user_controller = require(path.resolve('server/controllers/user.controller')),
     router = express.Router();
 
+router.route('/users/:user_id/visits')
+    .get(user_controller.getUsers)
+
 router.route('/users')
     .get(user_controller.getAll)
 

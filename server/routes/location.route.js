@@ -6,6 +6,9 @@ const express = require('express'),
 router.route('/locations')
     .get(location_controller.getAll)
 
+router.route('/locations/:location_id/avg')
+    .get(location_controller.getAver);
+
 router.route('/locations/:location_id')
     .get(location_controller.get)
     .post(location_controller.update)

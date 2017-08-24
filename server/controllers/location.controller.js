@@ -1,5 +1,8 @@
 const path = require('path'),
-    Locations = require(path.resolve('server/services/db')).model('locations');;
+    db = require(path.resolve('server/services/db')),
+    Users = db.model('users'),
+    Visits = db.model('visits'),
+    Locations = db.model('locations');
 
 module.exports = {
     locationIdParam(req, res, next, id) {
@@ -12,8 +15,25 @@ module.exports = {
     get(req, res) {
         res.json(req.user);
     },
+    getAver(req, res) {
+        arr = Visits.getAll((memo, v) => {
+            var user = Users.get(+v.user);
+            if (v.location === +req.params.location_id
+                && (!req.query.fromDate || v.visited_at > req.query.fromDate)
+                && (!req.query.toDate || v.visited_at < req.query.toDate)
+                && (!req.query.fromAge || new Date(Date.now() - user.birth_date).getYear() > req.query.fromAge)
+                && (!req.query.toAge || new Date(Date.now() - user.birth_date).getYear() < req.query.toAge)
+                && (!req.query.gender || user.gender === req.query.gender)) {
+                    memo.push(v.mark)
+                }
+            return memo;
+        });
+        res.json({
+            avg : arr.length === 0 ? 0 :parseFloat((arr.reduce((sum, cur) => sum += cur, 0) / arr.length).toFixed(5))
+        })
+    },
     getAll(req, res) {
-        res.json(Locations.getAll(req.query));
+        res.json(Locations.getAll());
     },
     update(req, res) {
         let model = req.body;

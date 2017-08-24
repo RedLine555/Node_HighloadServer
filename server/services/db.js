@@ -2,18 +2,10 @@ const path = require('path'),
     //users = require(path.resolve('tmp/data/users_1')).users;
 
 buildModel = function(data) {
-    query_filter = (o, query) => {
-        let res = true;
-        for(let key in query) {
-            if (o[key] && o[key] !== query[key]) {
-                return false;
-            }
-        }
-        return true;
-    }
+
     return {
-        getAll(query) {
-            return data.filter(o => query_filter(o));
+        getAll(filter) {
+            return filter ? data.reduce(filter, []) : data.slice();
         },
         get(id) {
             return data.find(u => u.id === id);
